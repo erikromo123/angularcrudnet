@@ -1,0 +1,173 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+<script src="~/Scripts/angular.js"></script>
+<script src="~/Scripts/AngularCode.js"></script>
+<script>
+    $(function () {
+        var bindDatePicker = function () {
+            $(".date").datetimepicker({
+                format: 'YYYY-MM-DD',
+                icons: {
+                    time: "fa fa-clock-o",
+                    date: "fa fa-calendar",
+                    up: "fa fa-arrow-up",
+                    down: "fa fa-arrow-down"
+                }
+            }).find('input:first').on("blur", function () {
+                // check if the date is correct. We can accept dd-mm-yyyy and yyyy-mm-dd.
+                // update the format if it's yyyy-mm-dd
+                var date = parseDate($(this).val());
+
+                if (!isValidDate(date)) {
+                    //create date based on momentjs (we have that)
+                    date = moment().format('YYYY-MM-DD');
+                }
+
+                $(this).val(date);
+            });
+        }
+
+        var isValidDate = function (value, format) {
+            format = format || false;
+            // lets parse the date to the best of our knowledge
+            if (format) {
+                value = parseDate(value);
+            }
+
+            var timestamp = Date.parse(value);
+
+            return isNaN(timestamp) == false;
+        }
+
+        var parseDate = function (value) {
+            var m = value.match(/^(\d{1,2})(\/|-)?(\d{1,2})(\/|-)?(\d{4})$/);
+            if (m)
+                value = m[5] + '-' + ("00" + m[3]).slice(-2) + '-' + ("00" + m[1]).slice(-2);
+
+            return value;
+        }
+
+        bindDatePicker();
+    });
+
+</script>
+<style>
+    .btn-space {
+        margin-left: -5%;
+        background-color: cornflowerblue;
+        font-size: large;
+    }
+</style>
+<h2>Index</h2>
+<div ng-app="myApp">
+    <div ng-controller="myCtrl" ng-init="GetAllData()" class="divList">
+        <p class="divHead">List of Employee</p>
+        <table cellpadding="12" class="table table-bordered table-hover">
+            <tr>
+                <td>
+                    <b>ID</b>
+                </td>
+                <td>
+                    <b>Name</b>
+                </td>
+                <td>
+                    <b>City</b>
+                </td>
+                <td>
+                    <b>Age</b>
+                </td>
+                <td>
+                    <b>Date</b>
+                </td>
+                <td>
+                    <b>Actions</b>
+                </td>
+            </tr>
+            <tr ng-repeat="Emp in employees">
+                <td>
+                    {{Emp.id}}
+                </td>
+                <td>
+                    {{Emp.name}}
+                </td>
+                <td>
+                    {{Emp.city}}
+                </td>
+                <td>
+                    {{Emp.age}}
+                </td>
+                <td>
+                    {{Emp.date}}
+                </td>
+                <td>
+                    <input type="button" class="btn btn-warning" value="Update" ng-click="UpdateEmp(Emp)" />
+                    <input type="button" class="btn btn-danger" value="Delete" ng-click="DeleteEmp(Emp)" />
+                </td>
+            </tr>
+        </table>
+        <div class="form-horizontal" role="form">
+            <div class="container">
+                <div class="row">
+                    <h2>
+                        <span id="spn">Add New Employee</span>
+                    </h2>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Name:</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="inputEmail" placeholder="Name" ng-model="EmpName">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">City:</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="inputPassword" placeholder="City" ng-model="EmpCity">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Age:</label>
+                            <div class="col-md-8">
+                                <input type="text" numbers-only class="form-control" id="inputLabel3" placeholder="Age" ng-model="EmpAge">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 col-lg-4">
+                        <input type="button" id="btnSave" class="form-control btn-space" value="Submit" ng-click="InsertData()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    @Html.Hidden("EmpID_")
+
+</div>  
+<div class="container">
+    <div class="row">
+        <div class='col-sm-6'>
+            <div class="form-group">
+                <div class='input-group date' id='datetimepicker1'>
+                    <input type='text' class="form-control" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $(function () {
+                $('#datetimepicker1').datetimepicker();
+            });
+        </script>
+    </div>
+</div>
